@@ -7,6 +7,12 @@ import (
 	"github.com/sspencer/str"
 )
 
+func BenchmarkChunk(b *testing.B) {
+	for n := 0; n < b.N; n++ {
+		str.ChunkString("1234567890", 3)
+	}
+}
+
 func TestChunks(t *testing.T) {
 	tt := []struct {
 		limit  int
