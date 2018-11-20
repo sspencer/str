@@ -1,6 +1,7 @@
 package str_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/sspencer/str"
@@ -40,6 +41,30 @@ func TestChunks(t *testing.T) {
 					t.Errorf("For index %d of %s (limit=%d), expected %s, not %s", i, tc.input, tc.limit, tc.output[i], c)
 					return
 				}
+			}
+		})
+	}
+}
+
+func TestCommas(t *testing.T) {
+	tt := []struct {
+		num    int64
+		output string
+	}{
+		{0, "0"},
+		{20, "20"},
+		{2018, "2,018"},
+		{-201, "-201"},
+		{-2018, "-2,018"},
+		{1234567, "1,234,567"},
+		{-1234567, "-1,234,567"},
+	}
+
+	for _, tc := range tt {
+		t.Run(fmt.Sprintf("Num_%d", tc.num), func(t *testing.T) {
+			r := str.Comma(tc.num)
+			if r != tc.output {
+				t.Errorf("For %d, expected %s, not %s", tc.num, tc.output, r)
 			}
 		})
 	}
