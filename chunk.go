@@ -11,36 +11,30 @@ import (
 //
 // e.g. ChunkString("1234", 3)  -> ["123", "4"]
 // e.g. Chunkstring("1234", -3) -> ["1", "234"]
-func ChunkString(buf string, lim int) []string {
-	if lim == 0 {
+func ChunkString(buf string, limit int) []string {
+	if limit == 0 {
 		return []string{buf}
 	}
 
-	sn := len(buf)
-	var m, b, e int
-	var parts []string
-	if lim < 0 {
-		lim = 0 - lim
-		m = sn % lim
+	var m, b, e int // mod, begin, end
+	ll := len(buf)
+
+	if limit < 0 {
+		limit = 0 - limit
+		m = ll % limit
 	}
 
-	if sn%lim == 0 {
-		parts = make([]string, sn/lim)
-	} else {
-		parts = make([]string, sn/lim+1)
-	}
+	ceiling := (ll + limit - 1) / limit
+	parts := make([]string, ceiling)
 
 	for i := range parts {
-		if m > 0 {
-			e = m
-			m = 0
-		} else {
-			b = e
-			e = b + lim
-		}
-
-		if e > sn {
-			e = sn
+		if m == 0 { // every iteration EXCEPT i=0, limit < 0
+			b, e = e, e+limit
+			if e > ll {
+				e = ll
+			}
+		} else { // first time thru for limit < 0
+			b, e, m = 0, m, 0
 		}
 
 		parts[i] = buf[b:e]
@@ -54,13 +48,12 @@ func ChunkString(buf string, lim int) []string {
 //
 // e.g. Comma(1234567) -> 1,234,567
 func Comma(n int64) string {
-	sign := ""
-
 	// only special case
 	if n == math.MinInt64 {
 		return "-9,223,372,036,854,775,808"
 	}
 
+	sign := ""
 	if n < 0 {
 		sign = "-"
 		n = 0 - n
