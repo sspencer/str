@@ -24,6 +24,6 @@ func (m myWorker) StringWork(fn string) string {
 
 func (m myWorker) startProcessing(filenames []string) {
     // transform 4 files at a time
-	results := str.Worker(4, filenames, m)
+    results := str.Worker(4, filenames, m)
 }
 ```
